@@ -1,166 +1,229 @@
-# API Keys Testing TUI
+# 🔑 API Keys Tester
 
-An interactive terminal UI application to test and validate AI provider API keys. Built with Python and Textual.
+A beautiful, interactive terminal application to test and validate AI provider API keys. Works on **macOS, Linux, and Windows**. No complicated setup—just download, install, and run!
 
-## Features
+[![Python 3.12+](https://img.shields.io/badge/Python-3.12%2B-blue)](https://www.python.org/downloads/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![GitHub](https://img.shields.io/badge/GitHub-WhiteRabbitCoder/api--keys--tester-blue)](https://github.com/WhiteRabbitCoder/api-keys-tester)
 
-- **Multi-provider support**: Test keys for OpenAI, Google Gemini, DeepSeek, OpenRouter, and NVIDIA NIM
-- **Dynamic model listing**: Automatically fetches and displays available models for each provider
-- **Liveness testing**: Run a simple prompt test to verify API key validity and measure latency
-- **Beautiful TUI**: Clean, keyboard-navigable interface with real-time feedback
-- **Auto-detection**: Automatically detects provider from API key prefix (with manual override)
+## ✨ Features
 
-## Installation
+- **5 AI Providers Supported**:
+  - 🟠 OpenAI (GPT-4, GPT-3.5, o1, etc.)
+  - 🔵 Google Gemini (Gemini 2.0, 1.5, etc.)
+  - ⚡ DeepSeek (All models)
+  - 🌍 OpenRouter (1000+ models)
+  - 🟣 NVIDIA NIM (Local/cloud models)
 
-### Prerequisites
-- Python 3.12+
+- **What it Does**:
+  1. ✅ Validates your API key
+  2. 📋 Lists all available models for your account
+  3. ⚡ Tests response time with a live API call
+  4. 📊 Shows detailed results (latency, response, status)
 
-### Setup
+- **Beautiful Terminal UI**:
+  - 🎨 Clean, modern design
+  - ⌨️ Full keyboard navigation
+  - 🚀 Smooth, non-blocking operations
+  - 🎯 Real-time loading indicators
+
+## 🚀 Quick Start (2 Minutes)
+
+### Step 1: Install Python (if needed)
+
+Check if you have Python 3.12+:
+```bash
+python3 --version
+```
+
+If not, [download Python 3.12+](https://www.python.org/downloads/)
+
+### Step 2: Clone the Repository
 
 ```bash
-# Create and activate virtual environment
-python3 -m venv .venv
-source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+git clone https://github.com/WhiteRabbitCoder/api-keys-tester.git
+cd api-keys-tester
+```
 
-# Install dependencies
+### Step 3: Set Up (One-Time)
+
+**macOS / Linux:**
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-## Usage
+**Windows (PowerShell):**
+```bash
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+```
+
+### Step 4: Run the App
 
 ```bash
-# Activate virtual environment (if not already activated)
-source .venv/bin/activate
-
-# Run the application
 python main.py
 ```
 
+You should see a beautiful terminal interface! 🎉
+
+## 📖 How to Use
+
+### Testing Your First API Key
+
+1. **Copy your API key** from your provider's dashboard:
+   - OpenAI: https://platform.openai.com/account/api-keys
+   - Google Gemini: https://aistudio.google.com/app/apikey
+   - DeepSeek: https://platform.deepseek.com/account/api_keys
+   - OpenRouter: https://openrouter.ai/keys
+   - NVIDIA NIM: https://build.nvidia.com/
+
+2. **Select Provider** (or let the app auto-detect):
+   - The app recognizes key prefixes automatically
+   - Can override manually if needed
+
+3. **Paste Your Key** in the input field:
+   - The key is masked (won't show on screen)
+   - Just paste and press Enter or click "Fetch Models"
+
+4. **View Available Models**:
+   - All models for your account appear instantly
+   - Shows model names and IDs
+
+5. **Select a Model** and click "Run Liveness Test":
+   - Sends: "Say hello in one word."
+   - Shows: Response + latency (usually 200-1000ms)
+   - Confirms: Your key works! ✓
+
 ### Keyboard Navigation
 
-- **Tab** / **Shift+Tab**: Navigate between widgets
-- **Arrow Keys**: Select options or navigate lists
-- **Enter**: Confirm selection or trigger action
-- **Esc**: (future) Cancel operations
-- **Ctrl+C**: Quit the application
+| Key | Action |
+|-----|--------|
+| `Tab` / `Shift+Tab` | Move between fields |
+| `↑` `↓` | Navigate lists |
+| `Enter` | Confirm / Select |
+| `Ctrl+C` | Exit app |
 
-### Workflow
+## 🔑 Supported API Keys
 
-1. **Select Provider**: The left panel starts with a provider dropdown (defaults to OpenAI, auto-detects from key prefix)
-2. **Enter API Key**: Paste or type your API key in the input field
-3. **Fetch Models**: Click "Fetch Models" to retrieve available models for your key
-4. **Select Model**: Choose a model from the list on the right
-5. **Run Test**: Click "Run Liveness Test" to verify the key works and see response latency
+| Provider | Key Format | Example |
+|----------|-----------|---------|
+| OpenAI | Starts with `sk-` | `sk-proj-abc123...` |
+| Gemini | Starts with `AIza` | `AIzaSyDiT-abc123...` |
+| DeepSeek | Starts with `sk-` | `sk-abc123...` |
+| OpenRouter | Starts with `sk-or-` | `sk-or-abc123...` |
+| NVIDIA NIM | Starts with `nvapi-` | `nvapi-abc123...` |
 
-## Supported Providers
+**Pro Tip**: The app auto-detects your provider from the key prefix. If it guesses wrong, just select the correct one from the dropdown.
 
-| Provider | Key Prefix | Status |
-|----------|-----------|--------|
-| OpenAI | `sk-` | ✓ Implemented |
-| Google Gemini | `AIza` | ✓ Implemented |
-| DeepSeek | `sk-` | ✓ Implemented |
-| OpenRouter | `sk-or-` | ✓ Implemented |
-| NVIDIA NIM | `nvapi-` | ✓ Implemented |
+## 🛠️ Troubleshooting
 
-## Project Structure
+### "Invalid API key" Error
+- ✓ Check your key has no extra spaces
+- ✓ Verify it's still valid in your provider's console
+- ✓ Make sure API access is enabled
 
-```
-src/
-├── providers/           # API provider implementations
-│   ├── base.py         # Abstract base class and data models
-│   ├── openai_provider.py
-│   ├── gemini_provider.py
-│   ├── deepseek_provider.py
-│   ├── openrouter_provider.py
-│   ├── nvidia_nim_provider.py
-│   └── openai_compat_mixin.py  # Shared mixin for OpenAI-compatible APIs
-├── tui/                 # Textual UI components
-│   ├── app.py          # Main application root
-│   ├── tui.tcss        # Styling (Textual CSS)
-│   ├── screens/        # Screen definitions
-│   │   └── main_screen.py
-│   └── widgets/        # Custom widgets
-│       ├── key_panel.py
-│       ├── models_panel.py
-│       └── results_panel.py
-└── utils/              # Utilities
-    └── key_detector.py # Key prefix detection
+### No Models Appear
+- ✓ Check your internet connection
+- ✓ Your key may lack required permissions
+- ✓ Try again (some providers have rate limits)
+
+### Slow/Timeout
+- ✓ Check if the provider's API is slow
+- ✓ Some providers respond slower than others
+- ✓ Try a different provider to compare
+
+### Python/pip Issues on Windows
+If you get errors, try using `python` instead of `python3`:
+```bash
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+python main.py
 ```
 
-## Architecture
+## 📦 What's Installed
 
-### Data Layer (Providers)
+The app uses only 5 core dependencies:
+- **textual** — Beautiful terminal UI framework
+- **httpx** — Async HTTP client for API calls
+- **pydantic** — Data validation
+- **python-dotenv** — Environment variable support
+- **rich** — Terminal formatting
 
-Each provider is a subclass of `BaseProvider` with two async methods:
+Everything is lightweight and has no external dependencies beyond these.
 
-- `list_models(api_key: str) -> list[ModelInfo]`: Fetch available models
-- `test_key(api_key: str, model_id: str) -> TestResult`: Run a liveness test
+## 📚 More Information
 
-Providers are completely independent of the UI and can be used programmatically.
+- **[QUICKSTART.md](QUICKSTART.md)** — 5-minute guided tour
+- **[FEATURES.md](FEATURES.md)** — Roadmap and planned features
+- **[PROJECT_STATUS.md](PROJECT_STATUS.md)** — Technical details
 
-### UI Layer (Textual)
+## 🧪 Verify Installation
 
-The TUI is structured as:
+Before testing with real keys, you can verify everything is set up correctly:
 
-- **MainScreen**: Event bus and state manager
-- **KeyPanel**: Provider selection and key input (left pane)
-- **ModelsPanel**: Available models list (right pane, top)
-- **ResultsPanel**: Test results display (right pane, bottom)
+```bash
+source .venv/bin/activate  # Activate virtual environment
+python test_providers.py
+```
 
-Widgets communicate via Textual `Message` events, keeping UI and business logic decoupled.
+You should see:
+```
+✓ All 5 providers imported
+✓ Key detection working
+✓ Provider interfaces correct
+```
 
-## Development Notes
+## 🤝 Contributing
+
+Want to add a new provider or feature? We'd love contributions!
 
 ### Adding a New Provider
 
-1. Create a new file in `src/providers/` (e.g., `myservice_provider.py`)
-2. Subclass `BaseProvider` and implement `list_models()` and `test_key()`
-3. Add an instance to the `PROVIDERS` dict in `src/providers/__init__.py`
-4. Update key detection in `src/utils/key_detector.py` if applicable
+1. Create a file `src/providers/myservice_provider.py`
+2. Subclass `BaseProvider` and implement two methods:
+   - `list_models(api_key)` — return available models
+   - `test_key(api_key, model_id)` — run a test prompt
+3. Add to `src/providers/__init__.py`
+4. Update key detection in `src/utils/key_detector.py`
 
-### Key Detection
+See existing providers for examples!
 
-The `detect_provider()` function uses key prefixes to infer the provider. Some providers (e.g., DeepSeek and OpenAI) share prefixes — in these cases, the UI allows manual override.
+## 📋 Requirements
 
-## Dependencies
+- **Python**: 3.12 or higher
+- **OS**: macOS, Linux, Windows
+- **Internet**: Required to call provider APIs
+- **Terminal**: Any modern terminal (works in VS Code, iTerm, Windows Terminal, etc.)
 
-- **textual**: TUI framework with built-in widgets
-- **httpx**: Async HTTP client for API calls
-- **pydantic**: Data validation for API responses
-- **python-dotenv**: Environment variable loading (for future .env support)
-- **rich**: Terminal formatting (included with textual)
+## 🎯 Use Cases
 
-## Future Enhancements
+✅ **Verify API Keys Work** — Before using in production  
+✅ **Compare Latency** — See which provider is fastest  
+✅ **Check Model Availability** — What models do you have access to?  
+✅ **Test Multiple Keys** — Validate different accounts  
+✅ **Quick API Diagnostics** — Is the service up?
 
-- [ ] Persist tested keys with metadata (timestamp, model used, latency)
-- [ ] Multi-key comparison: test multiple keys side-by-side
-- [ ] Custom prompt input for tests
-- [ ] Export results to CSV/JSON
-- [ ] Theme customization
-- [ ] Streaming response display for longer outputs
-- [ ] Key masking toggle (show/hide)
+## 📄 License
 
-## Troubleshooting
+MIT License — Free to use, modify, and distribute!
 
-### "Invalid API key" error
-- Verify the key is entered correctly and has no extra spaces
-- Check that the API key is still valid in the provider's console
-- Ensure you have API access enabled for the provider
+## 🙋 Support
 
-### No models appear
-- Check your internet connection
-- Verify the API key has sufficient permissions
-- Some providers may not return models for certain key types
+**Having issues?** Check:
+1. [QUICKSTART.md](QUICKSTART.md) — Step-by-step guide
+2. [Troubleshooting](#-troubleshooting) section above
+3. [GitHub Issues](https://github.com/WhiteRabbitCoder/api-keys-tester/issues)
 
-### Timeout errors
-- Check your network connection
-- The API might be slow; try again
-- Some providers have rate limiting; wait a moment before retrying
+## 🌟 Star This Repo!
 
-## License
+If this tool saves you time, please give it a ⭐ on GitHub!
 
-MIT
+---
 
-## Author
-
-Angelo Gaviria
+**Built with** ❤️ using Python + Textual  
+**Author**: Angelo Gaviria  
+**Repository**: https://github.com/WhiteRabbitCoder/api-keys-tester
