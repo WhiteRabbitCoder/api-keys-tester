@@ -38,12 +38,9 @@ class ModelsPanel(Static):
 
     def on_list_view_selected(self, event: ListView.Selected) -> None:
         """Handle model selection."""
-        item = event.cursor_line
-        list_view: ListView = self.query_one("#models-list", ListView)
-        if item < len(list_view.children):
-            selected_item = list_view.children[item]
-            if isinstance(selected_item, ModelListItem):
-                self.post_message(self.ModelSelected(selected_item.model))
+        item = event.item
+        if isinstance(item, ModelListItem):
+            self.post_message(self.ModelSelected(item.model))
 
     def populate(self, models: list[ModelInfo]) -> None:
         """Populate the list with models."""
