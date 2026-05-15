@@ -28,8 +28,6 @@ class ResultsPanel(Static):
         """Hide the loading indicator on mount."""
         loading: LoadingIndicator = self.query_one("#test-loading", LoadingIndicator)
         loading.display = False
-        test_btn: Button = self.query_one("#btn-test", Button)
-        test_btn.disabled = True
 
     def on_button_pressed(self, event: Button.Pressed) -> None:
         """Handle button presses."""
@@ -80,15 +78,6 @@ class ResultsPanel(Static):
         response_area: TextArea = self.query_one("#result-response", TextArea)
         response_area.text = error
 
-    def enable_test_button(self) -> None:
-        """Enable the test button."""
-        test_btn: Button = self.query_one("#btn-test", Button)
-        test_btn.disabled = False
-
-    def disable_test_button(self) -> None:
-        """Disable the test button."""
-        test_btn: Button = self.query_one("#btn-test", Button)
-        test_btn.disabled = True
 
     def clear(self) -> None:
         """Clear all results."""
@@ -103,5 +92,4 @@ class ResultsPanel(Static):
         status_label.remove_class("valid")
         status_label.remove_class("invalid")
 
-        self.disable_test_button()
         self.hide_loading()

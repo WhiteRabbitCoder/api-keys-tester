@@ -68,17 +68,20 @@ class MainScreen(Screen):
         """Handle model selection."""
         self.current_model = event.model
         results_panel: ResultsPanel = self.query_one("#results-panel", ResultsPanel)
-        results_panel.enable_test_button()
         results_panel.clear()
 
     def on_results_panel_test_requested(self, event: ResultsPanel.TestRequested) -> None:
         """Handle liveness test request."""
-        if not self.current_api_key or not self.current_provider or not self.current_model:
-            results_panel: ResultsPanel = self.query_one("#results-panel", ResultsPanel)
-            results_panel.show_error("Missing API key, provider, or model selection")
+        results_panel: ResultsPanel = self.query_one("#results-panel", ResultsPanel)
+
+        if not self.current_model:
+            results_panel.show_error("❌ Please select a model first")
             return
 
-        results_panel: ResultsPanel = self.query_one("#results-panel", ResultsPanel)
+        if not self.current_api_key or not self.current_provider:
+            results_panel.show_error("❌ Please enter API key and select a provider first")
+            return
+
         results_panel.show_loading()
 
         self.run_worker(
