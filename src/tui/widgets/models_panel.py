@@ -10,7 +10,7 @@ class ModelListItem(ListItem):
     """A list item for a model."""
 
     def __init__(self, model: ModelInfo) -> None:
-        super().__init__(Label(model.id))
+        super().__init__(Label(f"  {model.id}"))
         self.model = model
 
 

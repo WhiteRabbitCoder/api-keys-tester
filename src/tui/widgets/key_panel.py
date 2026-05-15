@@ -48,6 +48,11 @@ class KeyPanel(Static):
                         select_widget.value = detected
                 self.clear_status()
 
+    def on_input_submitted(self, event: Input.Submitted) -> None:
+        """Handle Enter key in input field."""
+        if event.input.id == "key-input":
+            self._handle_fetch()
+
     def on_button_pressed(self, event: Button.Pressed) -> None:
         """Handle button presses."""
         if event.button.id == "btn-fetch":
