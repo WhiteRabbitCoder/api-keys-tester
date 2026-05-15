@@ -1,0 +1,133 @@
+/* API Keys Testing TUI Layout */
+
+Screen {
+    background: $panel;
+    color: $text;
+}
+
+#main-layout {
+    height: 100%;
+    width: 100%;
+}
+
+#key-panel {
+    width: 40%;
+    height: 100%;
+    border: round $primary;
+    padding: 1 2;
+    background: $boost;
+}
+
+#key-panel Label {
+    margin-top: 1;
+    text-style: bold;
+    color: $accent;
+}
+
+#provider-select {
+    margin: 1 0;
+    width: 100%;
+}
+
+#key-input {
+    margin: 1 0;
+    width: 100%;
+}
+
+#key-status {
+    margin: 1 0;
+    height: auto;
+}
+
+#key-status.error {
+    color: $error;
+    text-style: bold;
+}
+
+#key-status.success {
+    color: $success;
+    text-style: bold;
+}
+
+#btn-fetch {
+    margin: 1 0 0 0;
+    width: 100%;
+}
+
+#right-pane {
+    width: 60%;
+    height: 100%;
+    overflow: hidden;
+}
+
+#models-panel {
+    height: 60%;
+    border: round $secondary;
+    padding: 1 2;
+    background: $boost;
+    margin-bottom: 1;
+}
+
+#models-panel Label {
+    margin-bottom: 1;
+    text-style: bold;
+    color: $accent;
+}
+
+#models-loading {
+    height: 1;
+    margin-bottom: 1;
+}
+
+#models-list {
+    width: 100%;
+    height: auto;
+}
+
+#results-panel {
+    height: 40%;
+    border: round $success;
+    padding: 1 2;
+    background: $boost;
+}
+
+#results-panel Label {
+    margin-bottom: 1;
+    text-style: bold;
+    color: $accent;
+}
+
+#btn-test {
+    margin: 1 0;
+    width: 100%;
+}
+
+#test-loading {
+    height: 1;
+    margin: 1 0;
+}
+
+#result-status {
+    margin: 1 0;
+    text-style: bold;
+    height: auto;
+}
+
+#result-status.valid {
+    color: $success;
+}
+
+#result-status.invalid {
+    color: $error;
+}
+
+#result-latency {
+    margin: 1 0;
+    height: auto;
+}
+
+#result-response {
+    margin-top: 1;
+    height: 1fr;
+    width: 100%;
+}
