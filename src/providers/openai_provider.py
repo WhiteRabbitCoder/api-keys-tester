@@ -4,7 +4,7 @@ import time
 from typing import Optional
 import httpx
 from pydantic import BaseModel, Field
-from .base import BaseProvider, ModelInfo, TestResult, ProviderError
+from .base import BaseProvider, ModelInfo, TestResult, ProviderError, _handle_http_error, _handle_request_error
 
 
 class OpenAIModel(BaseModel):
@@ -31,15 +31,9 @@ class OpenAIProvider(BaseProvider):
                     headers={"Authorization": f"Bearer {api_key}"},
                     timeout=10.0,
                 )
-                response.raise_for_status()
-            except httpx.HTTPStatusError as e:
-                if e.response.status_code == 401:
-                    raise ProviderError("Invalid API key", status_code=401)
-                raise ProviderError(f"API error: {e.response.status_code}", status_code=e.response.status_code)
-            except httpx.TimeoutException:
-                raise ProviderError("Request timeout")
             except httpx.RequestError as e:
-                raise ProviderError(f"Request failed: {e}")
+                raise _handle_request_error(e)
+            _handle_http_error(response)
 
             data = response.json()
             models = []
@@ -74,38 +68,30 @@ class OpenAIProvider(BaseProvider):
                     },
                     timeout=30.0,
                 )
-                response.raise_for_status()
-            except httpx.HTTPStatusError as e:
-                latency_ms = (time.time() - start_time) * 1000
-                if e.response.status_code == 401:
-                    return TestResult(
-                        success=False,
-                        response_text=None,
-                        latency_ms=latency_ms,
-                        error_message="Invalid API key",
-                        model_id=model_id,
-                        provider=self.name,
-                    )
-                return TestResult(
-                    success=False,
-                    response_text=None,
-                    latency_ms=latency_ms,
-                    error_message=f"API error: {e.response.status_code}",
-                    model_id=model_id,
-                    provider=self.name,
-                )
-            except (httpx.TimeoutException, httpx.RequestError) as e:
+            except httpx.RequestError as e:
                 latency_ms = (time.time() - start_time) * 1000
                 return TestResult(
                     success=False,
                     response_text=None,
                     latency_ms=latency_ms,
-                    error_message=f"Request failed: {e}",
+                    error_message=str(_handle_request_error(e)),
                     model_id=model_id,
                     provider=self.name,
                 )
 
             latency_ms = (time.time() - start_time) * 1000
+
+            try:
+                _handle_http_error(response)
+            except ProviderError as e:
+                return TestResult(
+                    success=False,
+                    response_text=None,
+                    latency_ms=latency_ms,
+                    error_message=str(e),
+                    model_id=model_id,
+                    provider=self.name,
+                )
 
             try:
                 data = response.json()

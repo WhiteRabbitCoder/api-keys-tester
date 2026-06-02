@@ -2,7 +2,7 @@
 
 import time
 import httpx
-from .base import BaseProvider, ModelInfo, TestResult, ProviderError
+from .base import BaseProvider, ModelInfo, TestResult, ProviderError, _handle_http_error, _handle_request_error
 
 
 class GeminiProvider(BaseProvider):
@@ -20,15 +20,9 @@ class GeminiProvider(BaseProvider):
                     params={"key": api_key},
                     timeout=10.0,
                 )
-                response.raise_for_status()
-            except httpx.HTTPStatusError as e:
-                if e.response.status_code == 401:
-                    raise ProviderError("Invalid API key", status_code=401)
-                raise ProviderError(f"API error: {e.response.status_code}", status_code=e.response.status_code)
-            except httpx.TimeoutException:
-                raise ProviderError("Request timeout")
             except httpx.RequestError as e:
-                raise ProviderError(f"Request failed: {e}")
+                raise _handle_request_error(e)
+            _handle_http_error(response)
 
             data = response.json()
             models = []
@@ -68,33 +62,13 @@ class GeminiProvider(BaseProvider):
                     },
                     timeout=30.0,
                 )
-                response.raise_for_status()
-            except httpx.HTTPStatusError as e:
-                latency_ms = (time.time() - start_time) * 1000
-                if e.response.status_code == 401:
-                    return TestResult(
-                        success=False,
-                        response_text=None,
-                        latency_ms=latency_ms,
-                        error_message="Invalid API key",
-                        model_id=model_id,
-                        provider=self.name,
-                    )
-                return TestResult(
-                    success=False,
-                    response_text=None,
-                    latency_ms=latency_ms,
-                    error_message=f"API error: {e.response.status_code}",
-                    model_id=model_id,
-                    provider=self.name,
-                )
-            except (httpx.TimeoutException, httpx.RequestError) as e:
+            except httpx.RequestError as e:
                 latency_ms = (time.time() - start_time) * 1000
                 return TestResult(
                     success=False,
                     response_text=None,
                     latency_ms=latency_ms,
-                    error_message=f"Request failed: {e}",
+                    error_message=str(_handle_request_error(e)),
                     model_id=model_id,
                     provider=self.name,
                 )
@@ -102,8 +76,57 @@ class GeminiProvider(BaseProvider):
             latency_ms = (time.time() - start_time) * 1000
 
             try:
-                data = response.json()
-                response_text = data["candidates"][0]["content"]["parts"][0]["text"]
+                _handle_http_error(response)
+            except ProviderError as e:
+                return TestResult(
+                    success=False,
+                    response_text=None,
+                    latency_ms=latency_ms,
+                    error_message=str(e),
+                    model_id=model_id,
+                    provider=self.name,
+                )
+
+            data = response.json()
+
+            # Check for prompt-level safety block
+            prompt_feedback = data.get("promptFeedback", {})
+            block_reason = prompt_feedback.get("blockReason")
+            if block_reason:
+                return TestResult(
+                    success=False,
+                    response_text=None,
+                    latency_ms=latency_ms,
+                    error_message=f"Prompt blocked by Gemini safety filter: {block_reason}",
+                    model_id=model_id,
+                    provider=self.name,
+                )
+
+            candidates = data.get("candidates", [])
+            if not candidates:
+                return TestResult(
+                    success=False,
+                    response_text=None,
+                    latency_ms=latency_ms,
+                    error_message="No response candidates returned — possible safety filter block",
+                    model_id=model_id,
+                    provider=self.name,
+                )
+
+            candidate = candidates[0]
+            finish_reason = candidate.get("finishReason", "")
+            if finish_reason == "SAFETY":
+                return TestResult(
+                    success=False,
+                    response_text=None,
+                    latency_ms=latency_ms,
+                    error_message="Response blocked by Gemini safety filter",
+                    model_id=model_id,
+                    provider=self.name,
+                )
+
+            try:
+                response_text = candidate["content"]["parts"][0]["text"]
                 return TestResult(
                     success=True,
                     response_text=response_text,
@@ -117,7 +140,7 @@ class GeminiProvider(BaseProvider):
                     success=False,
                     response_text=None,
                     latency_ms=latency_ms,
-                    error_message=f"Failed to parse response: {e}",
+                    error_message=f"Empty response — the model returned no content ({e})",
                     model_id=model_id,
                     provider=self.name,
                 )

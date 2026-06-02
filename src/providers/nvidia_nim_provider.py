@@ -8,4 +8,4 @@ class NvidiaNIMProvider(OpenAICompatMixin):
 
     name = "NVIDIA NIM"
     key_prefixes = ["nvapi-"]
-    BASE_URL = "https://integrate.api.nvidia.com/v1"
+    BASE_URL = "https://integrate.api.nvidia.com"
