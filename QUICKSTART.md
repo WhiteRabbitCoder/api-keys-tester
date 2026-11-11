@@ -31,7 +31,7 @@ You'll see a beautiful terminal UI with:
 
 2. **Click "Fetch Models"** or press Enter
    - Loading indicator appears
-   - Models list populates (gpt-4o, gpt-4-turbo, gpt-3.5-turbo, etc.)
+   - Models list populates from the API (for example, GPT-6 Luna or GPT-6.1 Sol)
 
 3. **Select a model** (use arrow keys, press Enter)
    - Test button becomes enabled
@@ -47,7 +47,7 @@ You'll see a beautiful terminal UI with:
    - App auto-detects "Google Gemini"
 
 2. **Fetch Models**
-   - Lists: gemini-2.0-flash, gemini-1.5-pro, gemini-1.5-flash, etc.
+   - Lists current models such as Gemini 3.8 Flash and Gemini 3.7 Flash
 
 3. **Select & Test**
    - Same workflow as OpenAI
